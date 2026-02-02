@@ -12,6 +12,7 @@ static String serverip="200.200.200.200";  // klassvariabel medlemsvariabel
 
  public Bil(){
 
+    
     this.wheel= 4;
     this.seat=5;
     this.växel=0;
