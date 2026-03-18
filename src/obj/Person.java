@@ -1,5 +1,8 @@
 package obj;
 
+// denna fil är skapa för att visa arvid gällande relationer , inget som 
+// vi har gått igenom.
+
 public class Person {
 
 int ålder;
