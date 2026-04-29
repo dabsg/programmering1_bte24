@@ -8,7 +8,6 @@ import javax.swing.*;
 
 public class Bolltest extends JComponent{
 
-    
     private Timer t;
     Boll b1= new Boll();
 

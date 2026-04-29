@@ -55,6 +55,13 @@ public class Poly extends JComponent implements KeyListener {
         if(e.getKeyCode()==KeyEvent.VK_UP){
 
             System.out.println("up");
+
+            for(int i=0; i<y.length;i++){
+
+                y[i]=y[i]-1;
+
+            }
+            repaint();
         }
 
 
