@@ -1,0 +1,91 @@
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
+const char* ssid = "tekniklabbet";
+const char* password = "65542668";
+
+const int ledPin = 2;
+
+IPAddress ip(192,168,30,83);
+IPAddress gw(192,168,30,1);
+IPAddress dn(192,168,30,1);
+IPAddress mask(255,255,255,0);
+
+ESP8266WebServer server(80);
+
+// HTML sparas i flashminnet istället för RAM
+const char MAIN_page[] PROGMEM = R"====(
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>STYRLAMPAN</title>
+</head>
+<body>
+<h1>STYRLAMPAN</h1>
+
+<p>
+<a href="/LEDon">
+<button>ON</button>
+</a>
+
+<a href="/LEDoff">
+<button>OFF</button>
+</a>
+</p>
+
+</body>
+</html>
+)====";
+
+void handleRoot() {
+  server.send_P(200, "text/html", MAIN_page);
+}
+
+void handleLedOn() {
+  digitalWrite(ledPin, HIGH);
+  server.send_P(200, "text/html", MAIN_page);
+  Serial.println("LED ON");
+}
+
+void handleLedOff() {
+  digitalWrite(ledPin, LOW);
+  server.send_P(200, "text/html", MAIN_page);
+  Serial.println("LED OFF");
+}
+
+void setup() {
+
+  pinMode(ledPin, OUTPUT);
+
+  Serial.begin(115200);
+
+  // Static IP ska sättas före begin()
+  WiFi.config(ip, gw, mask, dn);
+
+  WiFi.begin(ssid, password);
+
+  Serial.print("Connecting");
+
+  // Mindre blockering
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(100);
+    Serial.print(".");
+    yield(); // viktigt för ESP8266
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println(WiFi.localIP());
+
+  server.on("/", handleRoot);
+  server.on("/LEDon", handleLedOn);
+  server.on("/LEDoff", handleLedOff);
+
+  server.begin();
+}
+
+void loop() {
+  server.handleClient();
+  yield(); // håller WiFi-stacken responsiv
+}
